@@ -27,6 +27,25 @@
         <meta name="theme-color">
 
         <link rel="manifest" href="manifest.json">
+
+
+        <script>
+            let installPrompt = null;
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+            }
+
+            self.addEventListener('beforeinstallprompt', (event) => {
+                // Prevent the mini-infobar from appearing on mobile
+                event.preventDefault();
+                
+                installPrompt = event;
+
+                // Optionally, send analytics event that PWA install promo was shown.
+                console.log(`'beforeinstallprompt' event was fired.`);
+            });
+        </script>
 <!--
 
 Tooplate 2131 Wedding Lite
@@ -40,6 +59,20 @@ Free Bootstrap 5 HTML Template
     
     <body>
 
+        
+        <button type="button" id="install-button">install button</button>
+
+        <script>
+            const buttonInstall = document.getElementById('install-button')
+
+            buttonInstall.addEventListener('click', async (event)=>{
+                if (!installPrompt) {
+                    return;
+                }
+                const result = await installPrompt.prompt();
+                installPrompt = null;
+            })
+        </script>
         <section class="preloader">
             <div class="spinner">
                 <span class="spinner-rotate">
